@@ -1,6 +1,7 @@
 package dev.decagon.activity_tracker.services.imple;
 
-import dev.decagon.activity_tracker.exceptions.UserNotFoundEXception;
+import dev.decagon.activity_tracker.exceptions.InvalidUserDetailsException;
+import dev.decagon.activity_tracker.exceptions.UserNotFoundException;
 import dev.decagon.activity_tracker.models.entities.Login;
 import dev.decagon.activity_tracker.models.entities.User;
 import dev.decagon.activity_tracker.models.pojos.RegistrationRequest;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public UserDto login(String email, String password) {
 
         Login login = loginRepository.findByEmailAndPassword(email, password) // confirm if the user login details is correct
-                .orElseThrow(()->new UserNotFoundEXception("User not found"));
+                .orElseThrow(()->new UserNotFoundException("User not found", "Enter a valid email and password"));
         UserDto userDto=new UserDto();
         BeanUtils.copyProperties(userRepository.findByEmail(email),userDto); // get the user details and map to dto
         return userDto;
@@ -37,6 +38,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto register(RegistrationRequest newUser) {
+
+        if(newUser.getEmail()==null|| newUser.getPassword()==null||
+        newUser.getName()==null|| newUser.getGender()==null) throw new InvalidUserDetailsException("Invalid Details",
+                "Email, Name, Password, and Gender cannot be empty");
+
         User user= User.builder() // create user entity
                 .name(newUser.getName())
                 .email(newUser.getEmail())
@@ -61,7 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserDto update(UserDto userDto) {
         User user=userRepository.findByEmail(userDto.getEmail());
         if(user==null){
-            throw new UserNotFoundEXception("You cannot mutate user email");
+            throw new UserNotFoundException("User Email update attempted","You cannot mutate user email");
         }
         user.setName(userDto.getName());
         user.setGender(userDto.getGender());
