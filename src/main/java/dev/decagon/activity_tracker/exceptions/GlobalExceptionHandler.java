@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(UserNotFoundException.class)
-    protected ResponseEntity<Object> handleNotFound(UserNotFoundException ex){
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected ResponseEntity<Object> handleNotFound(EntityNotFoundException ex){
         ApiError apiError= new ApiError();
         apiError.setStatus(HttpStatus.NOT_FOUND);
         apiError.setMessage(ex.getMessage());
@@ -17,8 +17,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    protected ResponseEntity<Object> inValidUserInput(UserNotFoundException ex){
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected ResponseEntity<Object> inValidUserInput(EntityNotFoundException ex){
         ApiError apiError= new ApiError();
         apiError.setStatus(HttpStatus.NOT_FOUND);
         apiError.setMessage(ex.getMessage());

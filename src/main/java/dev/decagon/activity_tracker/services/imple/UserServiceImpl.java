@@ -1,7 +1,7 @@
 package dev.decagon.activity_tracker.services.imple;
 
 import dev.decagon.activity_tracker.exceptions.InvalidUserDetailsException;
-import dev.decagon.activity_tracker.exceptions.UserNotFoundException;
+import dev.decagon.activity_tracker.exceptions.EntityNotFoundException;
 import dev.decagon.activity_tracker.models.entities.Login;
 import dev.decagon.activity_tracker.models.entities.User;
 import dev.decagon.activity_tracker.models.pojos.RegistrationRequest;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public UserDto login(String email, String password) {
 
         Login login = loginRepository.findByEmailAndPassword(email, password) // confirm if the user login details is correct
-                .orElseThrow(()->new UserNotFoundException("User not found", "Enter a valid email and password"));
+                .orElseThrow(()->new EntityNotFoundException("User not found", "Enter a valid email and password"));
         UserDto userDto=new UserDto();
         BeanUtils.copyProperties(userRepository.findByEmail(email),userDto); // get the user details and map to dto
         return userDto;
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserDto update(UserDto userDto) {
         User user=userRepository.findByEmail(userDto.getEmail());
         if(user==null){
-            throw new UserNotFoundException("User Email update attempted","You cannot mutate user email");
+            throw new EntityNotFoundException("User Email update attempted","You cannot mutate user email");
         }
         user.setName(userDto.getName());
         user.setGender(userDto.getGender());
