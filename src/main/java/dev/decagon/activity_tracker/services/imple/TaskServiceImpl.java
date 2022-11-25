@@ -6,6 +6,7 @@ import dev.decagon.activity_tracker.models.entities.Task;
 import dev.decagon.activity_tracker.models.enums.Status;
 import dev.decagon.activity_tracker.models.pojos.TaskCreationRequest;
 import dev.decagon.activity_tracker.models.pojos.TaskDto;
+import dev.decagon.activity_tracker.models.pojos.TaskUpdateRequest;
 import dev.decagon.activity_tracker.models.utils.Mapper;
 import dev.decagon.activity_tracker.repositories.TaskRepository;
 import dev.decagon.activity_tracker.repositories.UserRepository;
@@ -60,26 +61,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto updateTitle(Long taskId, String newTitle) {
-        Task task=taskRepository.findById(taskId).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+taskId+"Not found")); // finds the task in the database or throws exception if not found
-        task.setTitle(newTitle);
+    public TaskDto updateTask(TaskUpdateRequest request) {
+        Task task=taskRepository.findById(request.getTaskId()).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
+                "Task with id : "+request.getTaskId()+"Not found")); // finds the task in the database or throws exception if not found
+        task.setTitle(request.getTitle());
+        task.setDescription(request.getDescription());
         return Mapper.taskToDTOMaper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
     }
 
     @Override
-    public TaskDto updateDescription(Long taskId, String newDescription) {
+    public TaskDto setPending(Long taskId) {
         Task task=taskRepository.findById(taskId).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
                 "Task with id : "+taskId+"Not found")); // finds the task in the database or throws exception if not found
-        task.setDescription(newDescription); //change the state of the object
-        return Mapper.taskToDTOMaper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
-
-    }
-
-    @Override
-    public TaskDto setPending(TaskDto taskDTO) {
-        Task task=taskRepository.findById(taskDTO.getId()).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+taskDTO.getId()+"Not found")); // finds the task in the database or throws exception if not found
         if (task.getStatus()==Status.PENDING) throw new IllegalEntityStateException("Illegal Object Update",
                 "Status cannot be changed to same state");
         task.setStatus(Status.PENDING); // change the state of the object
@@ -88,9 +81,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto setInProgress(TaskDto taskDTO) {
-        Task task=taskRepository.findById(taskDTO.getId()).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+taskDTO.getId()+"Not found")); // finds the task in the database or throws exception if not found
+    public TaskDto setInProgress(Long taskId) {
+        Task task=taskRepository.findById(taskId).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
+                "Task with id : "+taskId+"Not found")); // finds the task in the database or throws exception if not found
         if (task.getStatus()==Status.IN_PROGRESS) throw new IllegalEntityStateException("Illegal Object Update",
                 "Status cannot be changed to same state");
         task.setStatus(Status.IN_PROGRESS); // change the state of the object
@@ -99,9 +92,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDto setDone(TaskDto taskDTO) {
-        Task task=taskRepository.findById(taskDTO.getId()).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+taskDTO.getId()+"Not found")); // finds the task in the database or throws exception if not found
+    public TaskDto setDone(Long taskId) {
+        Task task=taskRepository.findById(taskId).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
+                "Task with id : "+taskId+"Not found")); // finds the task in the database or throws exception if not found
         if (task.getStatus()==Status.DONE) throw new IllegalEntityStateException("Illegal Object Update",
                 "Status cannot be changed to same state");
         task.setStatus(Status.DONE); // change the state of the object
