@@ -7,13 +7,15 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name ="Task")
-@Table(name ="task")
+
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity(name = "Task")
+@Table(name = "task")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,39 +29,29 @@ public class Task {
     @Column(name = "description")
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(
+            name = "status"
+    )
     private Status status;
-
-    @Column(
-            name = "created_at",
-            nullable = false
-    )
-    @Temporal(TemporalType.DATE)
-    private Date createdAt;
-
-    @Column(
-            name = "updated_at"
-    )
-
-    @Temporal(TemporalType.DATE)
-    private Date updatedAt;
 
     @Column(
             name = "completed_at"
     )
-    @Temporal(TemporalType.DATE)
     private Date completedAt;
 
+    @ManyToOne(
+            targetEntity = User.class,
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(
+            name = "User",
+            referencedColumnName = "id"
+    )
+    private User userId;
 
-    @PrePersist
-    public  void prePersist(){
-        this.status=Status.PENDING;
-        this.createdAt=new Date();
-    }
 
-    @PreUpdate
-    public void preUpdate(){
-        this.updatedAt=new Date();
-    }
+
 }
+
+
+

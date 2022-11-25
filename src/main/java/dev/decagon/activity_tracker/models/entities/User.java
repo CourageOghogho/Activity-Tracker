@@ -1,75 +1,42 @@
 package dev.decagon.activity_tracker.models.entities;
-
 import dev.decagon.activity_tracker.models.enums.Gender;
-import dev.decagon.activity_tracker.models.enums.Status;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity(name = "User")
-@Table(name="user")
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+@Entity(name = "User")
+@Table(name = "user")
+public class User  extends BaseEntity{
     @Id
     @Column(
-            name = "id",
-            updatable = false,
-            nullable = false
+            name = "id"
     )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(
-            name = "first_name",
+            name = "name",
             nullable = false
     )
-    private  String name;
-
+    private String name;
     @Column(
             name = "email",
-            unique = true,
             nullable = false,
-            updatable = false
+            unique = true
     )
     private String email;
 
-    @Enumerated(EnumType.STRING)
+    @Column(
+            name = "gender",
+            nullable = false
+    )
+    @Enumerated(value = EnumType.STRING)
     private Gender gender;
-    @OneToOne
-    @JoinColumn(
-        name = "login", referencedColumnName = "log_id"
-    )
-    private Login login;
-
-    @Column(
-            name = "created_at"
-    )
-
-    @Temporal(TemporalType.DATE)
-    private Date createdAt;
-
-    @Column(
-            name = "updated_at"
-    )
-
-    @Temporal(TemporalType.DATE)
-    private Date updatedAt;
-
-
-
-    @PrePersist
-    public  void prePersist(){
-        this.createdAt=new Date();
-    }
-
-    @PreUpdate
-    public void preUpdate(){
-        this.updatedAt=new Date();
-    }
-
 
 }

@@ -7,12 +7,12 @@ public class Mapper {
 
     public  static TaskDto taskToDTOMaper(Task task){
           return TaskDto.builder()
-                  .title(task.getTitle())
-                  .id(task.getId())
-                  .description(task.getDescription())
-                  .completedAt(task.getCompletedAt())
-                  .createdAt(task.getCreatedAt())
-                  .status(task.getStatus())
+//                  .title(task.getTitle())
+//                  .id(task.getId())
+//                  .description(task.getDescription())
+//                  .completedAt(task.getCompletedAt())
+//                  .createdAt(task.getCreatedAt())
+//                  .status(task.getStatus())
                   .build();
     }
 }

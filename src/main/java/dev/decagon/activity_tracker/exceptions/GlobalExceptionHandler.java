@@ -17,13 +17,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    protected ResponseEntity<Object> inValidUserInput(EntityNotFoundException ex){
+    @ExceptionHandler(InvalidUserDetailsException.class)
+    protected ResponseEntity<Object> inValidUserInput(InvalidUserDetailsException ex){
         ApiError apiError= new ApiError();
-        apiError.setStatus(HttpStatus.NOT_FOUND);
+        apiError.setStatus(HttpStatus.BAD_REQUEST);
         apiError.setMessage(ex.getMessage());
         apiError.setDebugMessage(ex.getDebugMessage());
 
-        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 }

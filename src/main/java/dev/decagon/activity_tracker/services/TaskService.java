@@ -1,6 +1,5 @@
 package dev.decagon.activity_tracker.services;
 
-import dev.decagon.activity_tracker.models.entities.Task;
 import dev.decagon.activity_tracker.models.pojos.TaskDto;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +9,7 @@ import java.util.List;
 public interface TaskService {
     TaskDto create(TaskDto task);
     void delete(Long id);
-    Task getTask(Long id);
+//    Task getTask(Long id);
     List<TaskDto> getTasks();
     TaskDto updateTitle(Long taskId, String newTitle);
     TaskDto updateDescription(Long taskId, String newDescription);

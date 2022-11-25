@@ -4,24 +4,24 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity(name="Login")
-@Table(name="login")
+
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Login {
+@Entity(name = "Login")
+@Table(name = "login")
+public class Login extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @Column(
-            name="email",
-            unique = true,
-            updatable = false
+            name = "id"
     )
+    private Long id;
     private String email;
-    @Column(name="password")
     private String password;
+
 
 }
