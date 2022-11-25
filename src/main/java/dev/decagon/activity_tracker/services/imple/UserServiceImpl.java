@@ -2,12 +2,10 @@ package dev.decagon.activity_tracker.services.imple;
 
 import dev.decagon.activity_tracker.exceptions.InvalidUserDetailsException;
 import dev.decagon.activity_tracker.exceptions.EntityNotFoundException;
-import dev.decagon.activity_tracker.models.entities.Login;
 import dev.decagon.activity_tracker.models.entities.User;
 import dev.decagon.activity_tracker.models.pojos.RegistrationRequest;
 import dev.decagon.activity_tracker.models.pojos.UserDto;
 import dev.decagon.activity_tracker.models.utils.Mapper;
-import dev.decagon.activity_tracker.repositories.LoginRepository;
 import dev.decagon.activity_tracker.repositories.UserRepository;
 import dev.decagon.activity_tracker.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -21,23 +19,18 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final LoginRepository loginRepository;
     private  final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(LoginRepository loginRepository, UserRepository userRepository) {
-        this.loginRepository = loginRepository;
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public UserDto login(String email, String password) {
-
-        Login login = loginRepository.findByEmailAndPassword(email, password) // confirm if the user login details is correct
-                .orElseThrow(()->new EntityNotFoundException("User not found", "Enter a valid email and password"));
-        UserDto userDto=new UserDto();
-        BeanUtils.copyProperties(userRepository.findByEmail(email),userDto); // get the user details and map to dto
-        return userDto;
+        return Mapper.userToDTO(
+                userRepository.findByEmailAndPassword(email,password)
+                .orElseThrow(()->new EntityNotFoundException("User not found", "Enter a valid email and password")));
     }
 
     @Override
@@ -46,20 +39,13 @@ public class UserServiceImpl implements UserService {
         if(newUser.getEmail()==null|| newUser.getPassword()==null||
         newUser.getName()==null|| newUser.getGender()==null) throw new InvalidUserDetailsException("Invalid Details",
                 "Email, Name, Password, and Gender cannot be empty");
-
-        User user= User.builder() // create user entity
+        return Mapper.userToDTO( userRepository.save(
+                User.builder() // create user entity
                 .name(newUser.getName())
                 .email(newUser.getEmail())
                 .gender(newUser.getGender())
-                .build();
-
-        Login login=Login.builder()  // create login details entity
-                .email(newUser.getEmail())
                 .password(newUser.getPassword())
-                .build();
-
-        loginRepository.save(login); //  persist login for the user
-        return Mapper.userToDTO( userRepository.save(user)); // persist user and return its DTO value
+                .build())); // persist user and return its DTO value
     }
 
     @Override

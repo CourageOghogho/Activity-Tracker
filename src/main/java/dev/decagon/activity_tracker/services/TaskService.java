@@ -1,6 +1,6 @@
 package dev.decagon.activity_tracker.services;
 
-import dev.decagon.activity_tracker.models.enums.Status;
+
 import dev.decagon.activity_tracker.models.pojos.TaskCreationRequest;
 import dev.decagon.activity_tracker.models.pojos.TaskDto;
 import dev.decagon.activity_tracker.models.pojos.TaskUpdateRequest;

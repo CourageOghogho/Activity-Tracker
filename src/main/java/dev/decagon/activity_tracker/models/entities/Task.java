@@ -32,25 +32,26 @@ public class Task  extends BaseEntity{
     @Column(
             name = "status"
     )
+    @Enumerated(value = EnumType.STRING)
     private Status status;
 
     @Column(
             name = "completed_at"
     )
+    @Temporal(value = TemporalType.DATE)
     private Date completedAt;
 
-    @ManyToOne(
-            targetEntity = User.class,
-            cascade = CascadeType.ALL
-    )
-    @JoinColumn(
-            name = "User",
-            referencedColumnName = "id"
+    @Column(
+            name = "user_id"
     )
     private Long userId;
 
-
-
+    public Task(String title, String description, Status status, Long userId) {
+        this.title = title;
+        this.description = description;
+        this.status = Status.PENDING;
+        this.userId = userId;
+    }
 }
 
 

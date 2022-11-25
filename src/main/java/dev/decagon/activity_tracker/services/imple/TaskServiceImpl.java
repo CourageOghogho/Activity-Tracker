@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +33,16 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto create(TaskCreationRequest newTask) {
-        return Mapper.taskToDTOMaper(Task.builder()
-                .title(newTask.getTitle())
-                .description(newTask.getDescription())
-                .userId(userRepository.findById(newTask.getUserId()).orElseThrow(
-                        ()->new EntityNotFoundException("User Not Found","Wrong user Id supplied")
-                ).getId())
-                .build());
+        return Mapper.taskToDTOMapper(taskRepository.save(
+                Task.builder()
+                        .title(newTask.getTitle())
+                        .description(newTask.getDescription())
+                        .userId(userRepository.findById(newTask.getUserId()).orElseThrow(
+                                ()->new EntityNotFoundException("User Not Found","Wrong user Id supplied")
+                        ).getId())
+                        .status(Status.PENDING)
+                        .build()
+        ));
     }
 
     @Override
@@ -49,56 +53,57 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getTask(Long id) {
-        return Mapper.taskToDTOMaper(taskRepository.findById(id).orElseThrow(
+        return Mapper.taskToDTOMapper(taskRepository.findById(id).orElseThrow(
                 ()->new EntityNotFoundException("Task Not Found","No task with the ID in our record")));
     }
 
     @Override
     public List<TaskDto> getAllTasks() {
         return taskRepository.findAll().stream()
-                .map(Mapper::taskToDTOMaper)
+                .map(Mapper::taskToDTOMapper)
                 .collect(Collectors.toList());
     }
 
     @Override
     public TaskDto updateTask(TaskUpdateRequest request) {
-        Task task=taskRepository.findById(request.getTaskId()).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+request.getTaskId()+"Not found")); // finds the task in the database or throws exception if not found
+        Task task= findTaskById(request.getTaskId());
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
-        return Mapper.taskToDTOMaper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
+        task.setUpdatedAt(new Date());
+        return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
     }
 
     @Override
     public TaskDto setPending(Long taskId) {
-        Task task=taskRepository.findById(taskId).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+taskId+"Not found")); // finds the task in the database or throws exception if not found
+        Task task=findTaskById(taskId);
         if (task.getStatus()==Status.PENDING) throw new IllegalEntityStateException("Illegal Object Update",
                 "Status cannot be changed to same state");
-        task.setStatus(Status.PENDING); // change the state of the object
-        return Mapper.taskToDTOMaper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
+        task.setStatus(Status.PENDING);// change the state of the object
+        task.setUpdatedAt(new Date());
+        return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
 
     }
 
     @Override
     public TaskDto setInProgress(Long taskId) {
-        Task task=taskRepository.findById(taskId).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+taskId+"Not found")); // finds the task in the database or throws exception if not found
+        Task task=findTaskById(taskId);
         if (task.getStatus()==Status.IN_PROGRESS) throw new IllegalEntityStateException("Illegal Object Update",
                 "Status cannot be changed to same state");
         task.setStatus(Status.IN_PROGRESS); // change the state of the object
-        return Mapper.taskToDTOMaper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
+        task.setUpdatedAt(new Date());
+        return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
 
     }
 
     @Override
     public TaskDto setDone(Long taskId) {
-        Task task=taskRepository.findById(taskId).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
-                "Task with id : "+taskId+"Not found")); // finds the task in the database or throws exception if not found
+        Task task=findTaskById(taskId);
         if (task.getStatus()==Status.DONE) throw new IllegalEntityStateException("Illegal Object Update",
                 "Status cannot be changed to same state");
         task.setStatus(Status.DONE); // change the state of the object
-        return Mapper.taskToDTOMaper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
+        task.setUpdatedAt(new Date());
+        System.out.println(new Date());
+        return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
 
     }
     @Override
@@ -119,14 +124,19 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskDto> viewAllUserTask(Long userId) {
         return taskRepository.findAllUserTasks(userId).stream()
-                .map(Mapper::taskToDTOMaper)
+                .map(Mapper::taskToDTOMapper)
                 .collect(Collectors.toList());
     }
 
-    protected List<TaskDto> viewBaseOnStatus(Long userId, Status status) {
+    private List<TaskDto> viewBaseOnStatus(Long userId, Status status) {
         return taskRepository.findByUserIdAndStatus(userId, status.name()).stream()
-                .map(Mapper::taskToDTOMaper)
+                .map(Mapper::taskToDTOMapper)
                 .collect(Collectors.toList());
+    }
+
+    private Task findTaskById(Long id){
+        return taskRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Task Not Found",
+                "Task with id : "+id+"Not found")); // finds the task in the database or throws exception if not found
     }
 
 }

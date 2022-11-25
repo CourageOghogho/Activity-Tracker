@@ -9,7 +9,6 @@ import java.util.List;
 
 @Service
 public interface UserService {
-
     UserDto login(String email, String password);
 
     UserDto register(RegistrationRequest newUser);

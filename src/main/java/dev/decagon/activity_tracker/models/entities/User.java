@@ -3,8 +3,6 @@ import dev.decagon.activity_tracker.models.enums.Gender;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @Getter
@@ -39,4 +37,16 @@ public class User  extends BaseEntity{
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
+    @Column(
+            name = "password",
+            nullable = false
+    )
+    private String password;
+
+    public User(String name, String email, Gender gender,String password) {
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.password=password;
+    }
 }

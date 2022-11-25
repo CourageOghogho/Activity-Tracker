@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class Mapper {
 
-    public  static TaskDto taskToDTOMaper(Task task){
+    public  static TaskDto taskToDTOMapper(Task task){
           return TaskDto.builder()
                   .title(task.getTitle())
                   .id(task.getId())
@@ -17,6 +17,9 @@ public class Mapper {
                   .completedAt(task.getCompletedAt())
                   .createdAt(task.getCreatedAt())
                   .status(task.getStatus())
+                  .updatedAt(task.getUpdatedAt())
+                  .completedAt(task.getCompletedAt())
+                  .userId(task.getUserId())
                   .build();
     }
 
@@ -26,6 +29,7 @@ public class Mapper {
                 .id(user.getId())
                 .gender(user.getGender())
                 .name(user.getName())
+                .upatedAt(user.getUpdatedAt())
                 .createdAt(user.getCreatedAt())
                 .upatedAt(new Date())
                 .build();

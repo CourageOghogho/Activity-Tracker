@@ -22,21 +22,21 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @PostMapping("/")
+    @PostMapping("/new")
     public ResponseEntity<TaskDto> create(@RequestBody TaskCreationRequest request){
         return new ResponseEntity<>(taskService.create(request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/")
+    @PutMapping("/edit")
     public ResponseEntity<TaskDto> update(@RequestBody TaskUpdateRequest request){
         return new ResponseEntity<>(taskService.updateTask(request), HttpStatus.OK);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/user/all")
     public ResponseEntity<List<TaskDto>> getMyTask(@RequestParam Long userId){
         return new ResponseEntity<>(taskService.viewAllUserTask(userId),HttpStatus.OK);
     }
-    @GetMapping("/task/")
+    @GetMapping("/task")
     public ResponseEntity<TaskDto> getTask(@RequestParam Long taskId){
         return new ResponseEntity<>(taskService.getTask(taskId),HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public class TaskController {
     public ResponseEntity<List<TaskDto>> getInProgressTask(@RequestParam Long userId){
         return new ResponseEntity<>(taskService.viewAllInProgress(userId),HttpStatus.OK);
     }
-    @GetMapping("/user/in-progress")
+    @GetMapping("/user/pending")
     public ResponseEntity<List<TaskDto>> getPendingTask(@RequestParam Long userId){
         return new ResponseEntity<>(taskService.viewAllPending(userId),HttpStatus.OK);
     }
