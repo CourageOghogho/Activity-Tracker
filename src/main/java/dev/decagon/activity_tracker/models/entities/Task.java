@@ -16,7 +16,7 @@ import java.util.Date;
 @Builder
 @Entity(name = "Task")
 @Table(name = "task")
-public class Task {
+public class Task  extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,7 +47,7 @@ public class Task {
             name = "User",
             referencedColumnName = "id"
     )
-    private User userId;
+    private Long userId;
 
 
 

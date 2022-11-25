@@ -23,6 +23,7 @@ public class TaskDto {
     private Date updatedAt;
 
     private Date completedAt;
+    private Long userId;
 
 
 }

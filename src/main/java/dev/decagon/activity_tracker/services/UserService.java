@@ -5,6 +5,8 @@ import dev.decagon.activity_tracker.models.pojos.RegistrationRequest;
 import dev.decagon.activity_tracker.models.pojos.UserDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface UserService {
 
@@ -13,4 +15,8 @@ public interface UserService {
     UserDto register(RegistrationRequest newUser);
 
     UserDto update(UserDto userDto);
+
+    UserDto getUser(Long id);
+
+    List<UserDto> getAllUsers();
 }

@@ -6,6 +6,7 @@ import dev.decagon.activity_tracker.models.entities.Login;
 import dev.decagon.activity_tracker.models.entities.User;
 import dev.decagon.activity_tracker.models.pojos.RegistrationRequest;
 import dev.decagon.activity_tracker.models.pojos.UserDto;
+import dev.decagon.activity_tracker.models.utils.Mapper;
 import dev.decagon.activity_tracker.repositories.LoginRepository;
 import dev.decagon.activity_tracker.repositories.UserRepository;
 import dev.decagon.activity_tracker.services.UserService;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -54,13 +58,8 @@ public class UserServiceImpl implements UserService {
                 .password(newUser.getPassword())
                 .build();
 
-        userRepository.save(user); // persist user
         loginRepository.save(login); //  persist login for the user
-
-        UserDto userDto=new UserDto();
-        BeanUtils.copyProperties(user,userDto); // map saved user to user dto
-
-        return userDto;
+        return Mapper.userToDTO( userRepository.save(user)); // persist user and return its DTO value
     }
 
     @Override
@@ -78,5 +77,18 @@ public class UserServiceImpl implements UserService {
 
         BeanUtils.copyProperties(user,userDto); // map saved user to user dto
         return userDto;
+    }
+
+    @Override
+    public UserDto getUser(Long id) {
+        return Mapper.userToDTO(userRepository.findById(id).orElseThrow(
+                ()->new EntityNotFoundException("User not Found","Provide valid user id")));
+    }
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(Mapper::userToDTO)
+                .collect(Collectors.toList());
     }
 }
