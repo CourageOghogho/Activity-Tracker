@@ -1,5 +1,6 @@
 package dev.decagon.activity_tracker.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.decagon.activity_tracker.models.enums.Status;
 import lombok.*;
 
@@ -15,10 +16,10 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Task")
-@Table(name = "task")
+@Table(name = "taskk")
 public class Task  extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(
             name = "title",
@@ -41,16 +42,30 @@ public class Task  extends BaseEntity{
     @Temporal(value = TemporalType.DATE)
     private Date completedAt;
 
-    @Column(
-            name = "user_id"
+    @ManyToOne(targetEntity = User.class)
+    @JsonIgnore
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id",
+            foreignKey = @ForeignKey(
+                    name = "task_user_id_fk"
+            )
     )
-    private Long userId;
+    private User user;
 
-    public Task(String title, String description, Status status, Long userId) {
+    public Task(String title, String description, Status status, User user) {
         this.title = title;
         this.description = description;
         this.status = Status.PENDING;
-        this.userId = userId;
+        this.user = user;
+    }
+
+    public Task(Long id, String title, String description, Status status, User user) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.user = user;
     }
 }
 

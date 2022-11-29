@@ -7,7 +7,7 @@ import dev.decagon.activity_tracker.models.enums.Status;
 import dev.decagon.activity_tracker.models.pojos.TaskCreationRequest;
 import dev.decagon.activity_tracker.models.pojos.TaskDto;
 import dev.decagon.activity_tracker.models.pojos.TaskUpdateRequest;
-import dev.decagon.activity_tracker.models.utils.Mapper;
+import dev.decagon.activity_tracker.utils.Mapper;
 import dev.decagon.activity_tracker.repositories.TaskRepository;
 import dev.decagon.activity_tracker.repositories.UserRepository;
 import dev.decagon.activity_tracker.services.TaskService;
@@ -37,9 +37,9 @@ public class TaskServiceImpl implements TaskService {
                 Task.builder()
                         .title(newTask.getTitle())
                         .description(newTask.getDescription())
-                        .userId(userRepository.findById(newTask.getUserId()).orElseThrow(
+                        .user(userRepository.findById(newTask.getUserId()).orElseThrow(
                                 ()->new EntityNotFoundException("User Not Found","Wrong user Id supplied")
-                        ).getId())
+                        ))
                         .status(Status.PENDING)
                         .build()
         ));
@@ -69,7 +69,6 @@ public class TaskServiceImpl implements TaskService {
         Task task= findTaskById(request.getTaskId());
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
-        task.setUpdatedAt(new Date());
         return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
     }
 
@@ -80,6 +79,7 @@ public class TaskServiceImpl implements TaskService {
                 "Status cannot be changed to same state");
         task.setStatus(Status.PENDING);// change the state of the object
         task.setUpdatedAt(new Date());
+        task.setCompletedAt(null);
         return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
 
     }
@@ -91,6 +91,7 @@ public class TaskServiceImpl implements TaskService {
                 "Status cannot be changed to same state");
         task.setStatus(Status.IN_PROGRESS); // change the state of the object
         task.setUpdatedAt(new Date());
+        task.setCompletedAt(null);
         return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
 
     }
@@ -98,13 +99,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskDto setDone(Long taskId) {
         Task task=findTaskById(taskId);
-        if (task.getStatus()==Status.DONE) throw new IllegalEntityStateException("Illegal Object Update",
-                "Status cannot be changed to same state");
         task.setStatus(Status.DONE); // change the state of the object
         task.setUpdatedAt(new Date());
-        System.out.println(new Date());
+        task.setCompletedAt(new Date());
         return Mapper.taskToDTOMapper(taskRepository.saveAndFlush(task)); //returns equivalent dto after persisting the update
-
     }
     @Override
     public List<TaskDto> viewAllPending(Long userId) {

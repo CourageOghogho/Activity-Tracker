@@ -29,14 +29,14 @@ public class TaskController {
 
     @PutMapping("/edit")
     public ResponseEntity<TaskDto> update(@RequestBody TaskUpdateRequest request){
-        return new ResponseEntity<>(taskService.updateTask(request), HttpStatus.OK);
+        return new ResponseEntity<>(taskService.updateTask(request), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/user/all")
+    @GetMapping("/user/all/")
     public ResponseEntity<List<TaskDto>> getMyTask(@RequestParam Long userId){
         return new ResponseEntity<>(taskService.viewAllUserTask(userId),HttpStatus.OK);
     }
-    @GetMapping("/task")
+    @GetMapping("/task/")
     public ResponseEntity<TaskDto> getTask(@RequestParam Long taskId){
         return new ResponseEntity<>(taskService.getTask(taskId),HttpStatus.OK);
     }
@@ -63,7 +63,7 @@ public class TaskController {
     public ResponseEntity<TaskDto> setTaskPending(@RequestParam Long taskId){
         return new ResponseEntity<>(taskService.setPending(taskId),HttpStatus.OK);
     }
-    @PatchMapping("/user/progress")
+    @PatchMapping("/user/progress/")
     public ResponseEntity<TaskDto> setTaskInProgress(@RequestParam Long taskId){
         return new ResponseEntity<>(taskService.setInProgress(taskId),HttpStatus.OK);
     }

@@ -5,7 +5,7 @@ import dev.decagon.activity_tracker.exceptions.EntityNotFoundException;
 import dev.decagon.activity_tracker.models.entities.User;
 import dev.decagon.activity_tracker.models.pojos.RegistrationRequest;
 import dev.decagon.activity_tracker.models.pojos.UserDto;
-import dev.decagon.activity_tracker.models.utils.Mapper;
+import dev.decagon.activity_tracker.utils.Mapper;
 import dev.decagon.activity_tracker.repositories.UserRepository;
 import dev.decagon.activity_tracker.services.UserService;
 import org.springframework.beans.BeanUtils;

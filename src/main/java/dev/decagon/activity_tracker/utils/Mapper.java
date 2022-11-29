@@ -1,4 +1,4 @@
-package dev.decagon.activity_tracker.models.utils;
+package dev.decagon.activity_tracker.utils;
 
 import dev.decagon.activity_tracker.models.entities.Task;
 import dev.decagon.activity_tracker.models.entities.User;
@@ -19,7 +19,7 @@ public class Mapper {
                   .status(task.getStatus())
                   .updatedAt(task.getUpdatedAt())
                   .completedAt(task.getCompletedAt())
-                  .userId(task.getUserId())
+                  .userId(task.getUser().getId())
                   .build();
     }
 
